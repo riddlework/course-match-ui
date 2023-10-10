@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>List with Checkboxes</title>
+
+  <style>
+    #list {
+      height: 200px;
+      overflow-y: scroll;
+      border: 1px solid #ccc; 
+    }
+
+    .hide {
+      display: none;
+    }
+
+    .checked {
+      color: red; 
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <h2>List with Checkboxes</h2>
+
+  <input type="text" id="filter">
+
+  <div id="list">
+    <ul>
+      <li>
+        <input type="checkbox"> 
+        Item 1
+      </li>
+      <li>
+        <input type="checkbox">
+        Item 2  
+      </li>
+      <li>
+        <input type="checkbox">
+        Item 3
+      </li>
+      <!-- and so on... -->
+    </ul>
+  </div>
+
+  <div id="no-results" class="hide">
+    No results found
+  </div>
+
+  <script>
+    const filter = document.getElementById('filter');
+    const list = document.getElementById('list');
+    const noResults = document.getElementById('no-results');
+
+    const checkboxes = list.querySelectorAll('input[type="checkbox"]');
+
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', toggleChecked);
+    });
+
+    filter.addEventListener('keyup', filterList);
+
+    function toggleChecked(e) {
+      const li = e.target.parentElement;
+      li.classList.toggle('checked');
+    }
+
+    function filterList() {
+      const value = filter.value.toLowerCase();
+      const items = list.querySelectorAll('li');
+
+      items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if(text.indexOf(value) === -1) {
+           item.classList.add('hide');
+        } else {
+           item.classList.remove('hide');
+        }
+      });
+
+      if(items.length === 0) {
+        noResults.classList.remove('hide');
+      } else {
+        noResults.classList.add('hide');
+      }
+    }
+
+  </script>
+
+</body>
+</html>
