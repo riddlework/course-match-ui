@@ -77,8 +77,11 @@
 
         </div>
         </section>
-
     </div>
+
+    <div id="text">
+        
+    </div> 
 
     <script>
         const filter = document.getElementById('filter');
@@ -146,7 +149,7 @@
             sortableLists.forEach(function(list) {
                 var seenItems = {}; // Object to store occurrences of items in this list
                 var listItems = list.querySelectorAll('li');
-                console.log(listItems);
+                // console.log(listItems);
 
                 for (var i = 0; i < listItems.length; i++) {
                     var item = listItems[i]
@@ -167,11 +170,36 @@
             });
         }
 
+        function printClassAndOrder() {
+            // console.log("HERE");
+            // Select all the sortable lists
+            var sortableLists = document.querySelectorAll('.sortable');
+            var toPrint = document.getElementById('text');
+            toPrint.innerText = "";
+
+            // Iterate through each sortable list
+            sortableLists.forEach(function(list) {
+                // printing name?
+                toPrint.innerText += "NEXT LIST\n";
+                var listItems = list.querySelectorAll('li');
+                console.log(listItems);
+                for (var i = 0; i < listItems.length; i++) {
+                    var text = listItems[i].innerText;
+                    toPrint.innerText += (i+1) + ". " + text + "\n";
+                }
+            });
+        }
+
         
 
         sortable('.sortable')[0].addEventListener('sortstop', function(e) {
             removeDuplicates();
+            printClassAndOrder();
+
+
         });
+
+        
 
         sortable('.js-sortable-copy', {
             forcePlaceholderSize: true,
