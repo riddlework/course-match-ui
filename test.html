@@ -16,23 +16,25 @@
     <!-- Button to add another constraint -->
     <!-- Drag classes into constraints -->
     <!-- Preserve the sorting so don't delete classes after drag from class list -->
-    <!-- But delete if dragging out of constraint box -->
+    <!-- But delete if dragging out of constraint box -- DONE PLUS NO DUPLICATES-->
+    <!-- Make it so that we can add list elements -->
+    <!-- Print the list in sorted order at the bottom -->
   
     <input type="text" id="filter">
   
     <div id="list">
       <ul>
         <li>
-          <input type="checkbox"> 
-          Item 1
+          <input id="class1" type="checkbox"> 
+          Class 1
         </li>
         <li>
-          <input type="checkbox">
-          Item 2  
+          <input id="class2" type="checkbox">
+          Class 2  
         </li>
         <li>
-          <input type="checkbox">
-          Item 3
+          <input id="class3" type="checkbox">
+          Class 3
         </li>
       </ul>
     </div>
@@ -56,12 +58,12 @@
             <div class="col col-6">
                 <h2 class="h4 mt1">Class list:</h2>
                 <ul class="ml4 js-sortable-copy sortable list flex flex-column list-reset">
-                    <li hidden="hidden" class="p1 mb1 silver bg-black" style="position: relative; z-index: 10">Class 1</li>
-                    <li class="p1 mb1 silver bg-black" style="position: relative; z-index: 10">Class 2</li>
-                    <li class="p1 mb1 silver bg-black" style="position: relative; z-index: 10">Class 3</li>
-                    <li class="p1 mb1 silver bg-black" style="position: relative; z-index: 10">Class 4</li>
-                    <li class="p1 mb1 silver bg-black" style="position: relative; z-index: 10">Class 5</li>
-                    <li class="p1 mb1 silver bg-black" style="position: relative; z-index: 10">Class 6</li>
+                    <li id="class1" class="p1 mb1 silver bg-black" style="display: none; position: relative; z-index: 10">Class 1</li>
+                    <li id="class2" class="p1 mb1 silver bg-black" style="display: none; position: relative; z-index: 10">Class 2</li>
+                    <li id="class3" class="p1 mb1 silver bg-black" style="display: none; position: relative; z-index: 10">Class 3</li>
+                    <li id="class4" class="p1 mb1 silver bg-black" style="display: none; position: relative; z-index: 10">Class 4</li>
+                    <li id="class5" class="p1 mb1 silver bg-black" style="display: none; position: relative; z-index: 10">Class 5</li>
+                    <li id="class6" class="p1 mb1 silver bg-black" style="display: none; position: relative; z-index: 10">Class 6</li>
                 </ul>
             </div>
 
@@ -73,27 +75,10 @@
 
             </div>
 
-            <!-- <div class="col col-6">
-
-                <h2 class="h4 mt1">At most two of:</h2>
-                <ul class="p2 border black border-black js-sortable-copy-target2 sortable list flex flex-column list-reset">
-                </ul>
-
-            </div>
-            
-            <div class="col col-6">
-
-                <h2 class="h4 mt1">At most three of:</h2>
-                <ul class="p2 border black border-black js-sortable-copy-target3 sortable list flex flex-column list-reset">
-                </ul>
-
-            </div> -->
-
         </div>
         </section>
 
     </div>
-
 
     <script>
         const filter = document.getElementById('filter');
@@ -102,120 +87,109 @@
         const noResults = document.getElementById('no-results');
 
         const checkboxes = list.querySelectorAll('input[type="checkbox"]');
+        
+        var sortableList = {};
 
         checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', toggleChecked);
+            checkbox.addEventListener('change', toggleChecked);
         });
 
         filter.addEventListener('keyup', filterList);
 
         function toggleChecked(e) {
-        const li = e.target.parentElement;
-        li.classList.toggle('checked');
-        
-        if (li.classList.contains('checked')) {
-            checked.appendChild(li);
-        } else {
-            list.appendChild(li); 
-        }
+            const li = e.target.parentElement;
+
+            const targetId = e.target.id;
+            const classCard = document.querySelector(`li#${targetId}`);
+
+            // Set class card visibility
+            if (e.target.checked) {
+                classCard.style.display = "block";
+            } else {
+                classCard.style.display = "none";
+            }
+
+            li.classList.toggle('checked');
+            
+            if (li.classList.contains('checked')) {
+                checked.appendChild(li);
+            } else {
+                list.appendChild(li);
+            }
         }
 
         function filterList() {
-        const value = filter.value.toLowerCase();
-        const items = list.querySelectorAll('li');
+            const value = filter.value.toLowerCase();
+            const items = list.querySelectorAll('li');
 
-        items.forEach(item => {
-            const text = item.textContent.toLowerCase();
-            if (text.indexOf(value) === -1) {
-            item.classList.add('hide');
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.indexOf(value) === -1) {
+                item.classList.add('hide');
+                } else {
+                item.classList.remove('hide');
+                }
+            });
+
+            if (items.length === 0) {
+                noResults.classList.remove('hide');  
             } else {
-            item.classList.remove('hide');
+                noResults.classList.add('hide');
             }
+        }
+
+        function removeDuplicates() {
+            // Select all the sortable lists
+            var sortableLists = document.querySelectorAll('.sortable');
+
+            // Iterate through each sortable list
+            sortableLists.forEach(function(list) {
+                var seenItems = {}; // Object to store occurrences of items in this list
+                var listItems = list.querySelectorAll('li');
+                console.log(listItems);
+
+                for (var i = 0; i < listItems.length; i++) {
+                    var item = listItems[i]
+                    // console.log(item.textContent);
+                    // console.log(item.innerText);
+                    var itemText = item.textContent || item.innerText;
+
+                    if (seenItems[itemText]) {
+                        // Duplicate item found, remove it
+                        list.removeChild(item);
+                        // console.log(list.parentNode);
+                        // list.parentNode.removeChild(item);
+                    } else {
+                        // Mark this item value as seen
+                        seenItems[itemText] = true;
+                    }
+                }
+            });
+        }
+
+        
+
+        sortable('.sortable')[0].addEventListener('sortstop', function(e) {
+            removeDuplicates();
         });
-
-        if (items.length === 0) {
-            noResults.classList.remove('hide');  
-        } else {
-            noResults.classList.add('hide');
-        }
-        }
-
 
         sortable('.js-sortable-copy', {
             forcePlaceholderSize: true,
             copy: true,
-                acceptFrom: false,
+            acceptFrom: '.js-sortable-copy-target1',
             placeholderClass: 'mb1 bg-navy border border-yellow',
-        });
+        }, 'disable');
         sortable('.js-sortable-copy-target1', {
             forcePlaceholderSize: true,
-            acceptFrom: '.js-sortable-copy, .js-sortable-copy-target1, .js-sortable-copy-target2, .js-sortable-copy-target3',
+            acceptFrom: '.js-sortable-copy, .js-sortable-copy-target1',
             placeholderClass: 'mb1 border border-maroon',
             maxItems: 4
             });
-        sortable('.js-sortable-copy-target2', {
-            forcePlaceholderSize: true,
-            acceptFrom: '.js-sortable-copy, .js-sortable-copy-target1, .js-sortable-copy-target2, .js-sortable-copy-target3',
-            placeholderClass: 'mb1 border border-maroon',
-            maxItems: 4
-            });
-        sortable('.js-sortable-copy-target3', {
-            forcePlaceholderSize: true,
-            acceptFrom: '.js-sortable-copy, .js-sortable-copy-target1, .js-sortable-copy-target2, .js-sortable-copy-target3',
-            placeholderClass: 'mb1 border border-maroon',
-            maxItems: 4
-            });
-        
-
-
         sortable('.js-sortable-buttons', {
             forcePlaceholderSize: true,
             items: 'li',
             placeholderClass: 'border border-white mb1',
-        hoverClass: 'bg-yellow'
-        });
-
-        // buttons to add items and reload the list
-        // separately to showcase issue without reload
-        document.querySelector('.js-add-item-button').addEventListener('click', function(){
-            doc = new DOMParser().parseFromString(`<li class="p1 mb1 blue bg-white">new item</li>`, "text/html").body.firstChild;
-            document.querySelector('.js-sortable-buttons').appendChild(doc);
-        });
-
-        document.querySelector('.js-reload').addEventListener('click', function(){
-            console.log('Options before re-init:');
-            console.log(document.querySelector('.js-sortable-buttons').h5s.data.opts);
-            sortable('.js-sortable-buttons');
-            console.log('Options after re-init:');
-            console.log(document.querySelector('.js-sortable-buttons').h5s.data.opts);
-        });
-
-        // JS DISABLED
-        document.querySelector('.js-disable').addEventListener('click', function(){
-            var $list = document.querySelector('[data-disabled]');
-            if ( $list.getAttribute('data-disabled') === 'false' ) {
-                this.innerHTML = 'Enable';
-                sortable($list, 'disable');
-                $list.setAttribute('data-disabled', true);
-                $list.classList.add('muted');
-            } else {
-                this.innerHTML = 'Disable';
-                sortable($list, 'enable');
-                $list.setAttribute('data-disabled', false);
-                $list.classList.remove('muted');
-            }
-        });
-
-        // Destroy & Init
-        document.querySelector('.js-destroy').addEventListener('click', function(){
-            sortable('.js-sortable-buttons', 'destroy');
-        });
-        document.querySelector('.js-init').addEventListener('click', function(){
-            sortable('.js-sortable-buttons', {
-                forcePlaceholderSize: true,
-                items: 'li',
-                placeholderClass: 'border border-white mb1'
-            });
+            hoverClass: 'bg-yellow'
         });
     </script>
 </body>
