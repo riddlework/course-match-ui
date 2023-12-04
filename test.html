@@ -193,20 +193,30 @@
         
 
         sortable('.sortable')[0].addEventListener('sortstop', function(e) {
+            console.log("FIRED1");
             removeDuplicates();
             printClassAndOrder();
-
-
         });
 
-        
+        sortable('.sortable')[1].addEventListener('sortupdate', function(e) {
+            console.log("FIRED2");
+            printClassAndOrder();
+        });
 
+        // create a pre-populated constraint box -- can't drag anything from inside it to anything outside it
+
+        // sortable('.js-sortable-copy', {
+        //     forcePlaceholderSize: true,
+        //     copy: true,
+        //     acceptFrom: '.js-sortable-copy-target1',
+        //     placeholderClass: 'mb1 bg-navy border border-yellow',
+        // }, 'disable');
         sortable('.js-sortable-copy', {
             forcePlaceholderSize: true,
             copy: true,
-            acceptFrom: '.js-sortable-copy-target1',
+            acceptFrom: '.js-sortable-copy-target1, .js-sortable-copy',
             placeholderClass: 'mb1 bg-navy border border-yellow',
-        }, 'disable');
+        });
         sortable('.js-sortable-copy-target1', {
             forcePlaceholderSize: true,
             acceptFrom: '.js-sortable-copy, .js-sortable-copy-target1',
