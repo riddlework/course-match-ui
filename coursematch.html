@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CourseMatch — Preference-Based Registration</title>
+  <link rel="stylesheet" href="coursematch.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>CourseMatch</h1>
+    <p>Express your preferences — we'll find the best fit.</p>
+  </header>
+
+  <div class="app-columns">
+
+    <!-- ── Master Course List ── -->
+    <aside id="master-panel">
+      <div class="panel-heading">Course Catalog</div>
+      <input
+        type="text"
+        id="course-search"
+        placeholder="Search courses…"
+        autocomplete="off"
+      >
+      <div class="active-box-hint" id="active-box-hint">
+        Check a course to add it to the highlighted box →
+      </div>
+      <ul id="master-list-ul"></ul>
+    </aside>
+
+    <!-- ── Right side: Constraint Boxes + Footer ── -->
+    <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+
+      <div id="constraints-panel">
+        <div class="constraints-scroll">
+          <div id="constraints-container"></div>
+        </div>
+        <div class="add-constraint-row">
+          <button id="add-constraint-btn">+ Add Constraint</button>
+        </div>
+      </div>
+
+      <!-- Output panel (hidden until Show Ranking is clicked) -->
+      <div id="output-panel">
+        <pre id="output-area"></pre>
+      </div>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <button id="show-ranking-btn">Show My Ranking</button>
+        <span class="footer-hint">Drag courses into boxes and rank them by preference.</span>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html5sortable@0.13.3/dist/html5sortable.min.js"></script>
+  <script src="coursematch.js"></script>
+</body>
+</html>
